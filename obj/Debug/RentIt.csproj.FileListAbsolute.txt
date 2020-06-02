@@ -1,0 +1,2 @@
+F:\JB\RentIt\obj\Debug\RentIt.csprojAssemblyReference.cache
+C:\JB\RentIt\obj\Debug\RentIt.csprojAssemblyReference.cache

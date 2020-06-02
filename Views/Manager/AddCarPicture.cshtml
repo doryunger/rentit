@@ -1,0 +1,37 @@
+﻿@model RentIt.Models.CarView
+
+
+<h2>Picture</h2>
+<link rel="stylesheet" href="~/Content/jasny-bootstrap.css" />
+
+
+
+@using (Html.BeginForm("SubmitPicture", "Manager", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <div class="fileinput fileinput-new" data-provides="fileinput">
+        <span class="btn btn-default btn-file">
+            <span>Choose file</span>
+            <input id="picture" name="picture" type="file" />
+        </span>
+        <span class="fileinput-filename"></span><span class="fileinput-new">No file chosen</span>
+    </div>
+    <br />
+
+    @Html.HiddenFor(x => x.ID)
+    @Html.HiddenFor(x => x.SnifID)
+    @Html.HiddenFor(x => x.CarNumber)
+    @Html.HiddenFor(x => x.KM)
+    @Html.HiddenFor(x => x.ModelID)
+    @Html.HiddenFor(x => x.CarAvilablity)
+
+    <input type="submit" class="btn btn-success btn-sm" value="submit" />
+
+
+
+
+
+
+}
+<script src="~/Scripts/ScriptLibriaries/jquery-3.1.1.min.js"></script>
+<script src="~/Scripts/ScriptLibriaries/jasny-bootstrap.js"></script>

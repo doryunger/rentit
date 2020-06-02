@@ -1,0 +1,386 @@
+﻿@using CarRent.Entities
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+<h2>Car Search</h2>
+<main>
+    <div class="container carsearch col-lg-12">
+        <label>Search by gear</label>
+        <div class="input-group col-md-3">
+            <select name="transmission" class="dropdown form-control" id="gear">
+                <option value="" selected>--Select Gear--</option>
+                <option value="0">Manual</option>
+                <option value="1">Automatic</option>
+                @*<option value="2">robotic</option>*@
+            </select>
+        </div>
+        <br />
+        <br />
+        <label>Search by model</label>
+        <div class="input-group col-md-3">
+            @Html.DropDownList("model", (IEnumerable<SelectListItem>)ViewBag.model, "-- Please Select --", new { @class = "dropdown form-control" })
+        </div>
+        <br />
+        <br />
+
+        <label>Search by manufacturer</label>
+        <div class="input-group col-md-3">
+            <input id="manufa" type="text" class="form-control" placeholder="manufacturer..." />
+        </div>
+        <br />
+        <br />
+
+        <label>Please Select Date</label>
+
+        <div class="input-group col-md-3 datepicking">
+            <input type="text" id="PurchaseDate" class="datepicker form-control" placeholder="From..." /><span>     </span>
+        </div>
+        <div class="input-group col-md-3">
+            <input type="text" id="ReturnDate" class="datepicker form-control" placeholder="To..." />
+        </div>
+        <br />
+        <br />
+
+        <label>Price Search</label>
+        <div class="input-group col-md-3">
+            <input type="text" id="freeText" class="form-control" placeholder="Search for ...">
+        </div>
+        <br />
+        <br />
+        <div class="input-group col-md-3">
+            <button class="btn btn-primary" onclick="Search();"><span class="glyphicon glyphicon-search"> Search</span></button>
+        </div>
+        <div class="input-group col-md-3">
+            <button class="btn btn-default" id="reset">Clear Results</button>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div id="failure"></div>
+
+    <div class="container col-lg-12">
+        <div id="ListCar">
+            @Html.Action("_List", "Guest")
+        </div>
+        <div id="selectedcars">
+            <h3>Cars you were interested in:</h3>
+            <br />
+            <div id="ListSelect">
+                @Html.Action("_ListSelect", "Guest")
+            </div>
+            <ul class="list-inline" id="interested"></ul>
+            <button class="btn btn-default" id="clearselection">Clear Selections</button>
+        </div>
+        <div id="dialog" title="Price Calculation">
+
+            <h3 id="modelName"></h3>
+            <input id="modelId" type="hidden" />
+            <span>From</span><br />
+            <input type="text" id="datepickerStart" class="form-control datepicker">
+            <br />
+            <span>To</span>      <br />
+            <input type="text" id="datepickerEnd" class="form-control datepicker">
+            <br />
+            <div id="PriceCalculation">
+            </div>
+            <br />
+            @if (User.Identity.IsAuthenticated)
+            {
+                <button class="btn btn-default calculate" onclick="PriceCalculation()">Price Calculation</button>
+                <button class="makeorder btn btn-default" onclick="MakeOrder()">Make Order</button>
+            }
+            else
+            {
+                <a href="@Url.Action("Login", "Home")">Please Log in</a>   <a href="@Url.Action("SignUp", "Home")">or sign up </a><span> before making reservation</span>
+            }
+
+        </div>
+        <form action="@Url.Action("MakeOrder", "Guest")" method="post"></form>
+    </div>
+</main>
+
+@*<script src="~/Scripts/ScriptLibriaries/jquery-3.1.1.min.js"></script>*@
+
+@*<script src="~/Scripts/ScriptLibriaries/jquery-ui-1.12.1.min.js"></script>*@
+<script src="~/Scripts/ScriptLibriaries/bootstrap.min.js"></script>
+<script src="~/Scripts/ScriptLibriaries/moment.min.js"> </script>
+<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/ViewScripts/MainScript.js"></script>
+<script src="~/Scripts/ViewScripts/GuestControllerScript.js"></script>
+<script src="~/Scripts/ScriptLibriaries/jquery.validate.min.js"></script>
+<script src="~/Scripts/ScriptLibriaries/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        $("#reset").click(function () {
+            $(".carsearch").find("input").val("");
+            $(".carsearch").find("select").val("");
+        });
+        $('.datepicker').datepicker();
+        $("#clearselection").click(function () {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("RemoveAllPurchases", "Guest")",
+                //data: {CarID : carID},
+                dataType: "json",
+                success: function (result) {
+                    if (result == 0) {
+                        alert("Please sign in to use this feature");
+                    }
+                    else if (result == 1) {
+                        Search();
+                        LoadListCarSelect();
+                    }
+                    else {
+                        alert("Error, Please refresh website!");
+                    }
+                }
+            });
+        });
+
+    });
+    function Search() {
+
+        var data = {
+            gear: null,
+            model: null,
+            manufa: null,
+            price: null,
+            purchaseDate: null,
+            returnDate: null
+        };
+        if ($("#gear").val().trim().length > 0)
+            data.gear = $("#gear").val().trim();
+        if ($("#model").val().trim().length > 0)
+            data.model = $("#model").val().trim();
+        if ($("#manufa").val().trim().length > 0)
+            data.manufa = $("#manufa").val().trim();
+        if ($("#freeText").val().trim().length > 0)
+            data.price = $("#freeText").val().trim();
+        if ($("#PurchaseDate").val().trim().length > 0)
+            data.purchaseDate = new Date($("#PurchaseDate").val().trim());
+        if ($("#ReturnDate").val().trim().length > 0)
+            data.returnDate = new Date($("#ReturnDate").val().trim());
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("_List","Guest")",
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            dataType: "html",
+            success: function (result) {
+                $("#ListCar").html(result);
+            }
+        });
+    }
+    function LoadListCarSelect() {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("_ListSelect", "Guest")",
+            //data: data,
+            dataType: "html",
+            success: function (result) {
+                $("#ListSelect").html(result);
+                var list = $("#ListSelect").find("li");
+                $("#NumberMyBusket").html(list.length);
+                $("#PriceCalculation").html("");
+
+            }
+        });
+    }
+    function AddNewPurchases(carID) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("AddNewPurchases", "Guest")",
+            data: { CarID: carID },
+            dataType: "json",
+            success: function (result) {
+                if (result == 0) {
+                    alert("Please sign in to use this feature");
+                }
+                else if (result == 1) {
+                    Search();
+                    LoadListCarSelect();
+                }
+                else {
+                    alert("Error, Please refresh website!");
+                }
+            }
+        });
+    }
+    function RemovePurchases(carID) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("RemovePurchases", "Guest")",
+            data: { CarID: carID },
+            dataType: "json",
+            success: function (result) {
+                if (result == 0) {
+                    alert("Please sign in to use this feature");
+                }
+                else if (result == 1) {
+                    Search();
+                    LoadListCarSelect();
+                }
+                else {
+                    alert("Error, Please refresh website!");
+                }
+            }
+        });
+    }
+    function Searcha() {
+        var list = $(".carlist").find("li");
+        // Search Gear
+        if ($("#gear").val().trim().length > 0) {
+            var searchgear = "li[data-gear=" + $("#gear").val() + "]";
+            list = list.filter(searchgear);
+        }
+        // Search Model
+        if ($("#model").val().trim().length > 0) {
+            var searchmodel = "li[data-carmodel=" + $("#model").val() + "]";
+            list = list.filter(searchmodel);
+        }
+        // Search Manufa
+        if ($("#manufa").val().trim().length > 0) {
+            var searchmanufa = "li[data-carmodel~=" + $("#manufa").val().toUpperCase() + "]";
+            list = list.filter(searchmanufa);
+        }
+        // Search free
+        if ($("#freeText").val().trim().length > 0) {
+            var freeText = parseInt($("#freeText").val());
+            if (freeText > 0) {
+                list = list.filter(function () {
+                    //console.log($(this));
+                    //console.log(parseInt($(this).attr('data-price')));
+                    return ((freeText - 50) <= parseInt($(this).attr('data-price')) && parseInt($(this).attr('data-price')) <= (freeText + 50));
+
+                });
+                console.log(list);
+            }
+            else {
+                alert("Please input Price Correct value");
+            }
+        }
+        if ($("#ReturnDate").val().trim().length > 0 || $("#ReturnDate").val().trim().length > 0) {
+
+        }
+        else {
+            $(".carlist").find("li").hide();
+            list.show();
+        }
+
+    }
+
+    function PriceCalculation() {
+        var list = $("#ListSelect").find("li");
+        if (list.length == 0) {
+            alert("Please select car!");
+            return;
+        }
+        if ($("#datepickerStart").val().trim().length <= 0 || $("#datepickerEnd").val().trim().length <= 0) {
+            alert("Please input Date Start and Date End!");
+            return;
+        }
+        var dateStart = new Date($("#datepickerStart").val().trim());
+        var dateEnd = new Date($("#datepickerEnd").val().trim());
+        if (dateEnd.getTime() < dateStart.getTime()) {
+            alert("Please input Date Start before Date End!");
+            return;
+        }
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth(); //January is 0!
+        var yyyy = today.getFullYear();
+        today = new Date(yyyy, mm, dd);
+        if (dateStart.getTime() < today.getTime()) {
+            alert("Please input Date Start after Today!");
+            return;
+        }
+        var numberDate = (dateEnd.getTime() - dateStart.getTime()) / (1000 * 60 * 60 * 24) + 1;
+        var data = { NumberDate: numberDate, DateStart: dateStart, DateEnd: dateEnd };
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("CalculationPrice", "Guest")",
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            dataType: "html",
+            success: function (result) {
+                $("#PriceCalculation").html(result);
+            }
+        });
+    }
+
+    function MakeOrder() {
+        var isConfirm = confirm("Would you like to order?");
+        if (isConfirm)
+        {
+            var list = $("#ListSelect").find("li");
+            if (list.length == 0) {
+                alert("Please select car!");
+                return;
+            }
+            if ($("#datepickerStart").val().trim().length <= 0 || $("#datepickerEnd").val().trim().length <= 0) {
+                alert("Please input Date Start and Date End!");
+                return;
+            }
+            var dateStart = new Date($("#datepickerStart").val().trim());
+            var dateEnd = new Date($("#datepickerEnd").val().trim());
+            if (dateEnd.getTime() < dateStart.getTime()) {
+                alert("Please input Date Start before Date End!");
+                return;
+            }
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth(); //January is 0!
+            var yyyy = today.getFullYear();
+            today = new Date(yyyy, mm, dd);
+            if (dateStart.getTime() < today.getTime()) {
+                alert("Please input Date Start after Today!");
+                return;
+            }
+            var data = { DateStart: null, DateEnd: null };
+
+            data.DateStart = dateStart;
+            data.DateEnd = dateEnd;
+            console.log(data);
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("MakeOrder", "Guest")',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    if (data) {
+                        window.location.href=data.url;
+                    }
+                    else {
+                        window.location.href="@Url.Action("Index", "Guest")";
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });              
+
+        }
+    }
+    $(function () {
+        var list = $("#ListSelect").find("li");
+        if (list.length > 0) {
+            $.ajax({
+                url: '@Url.Action("LoadDateSelect", "Guest")',
+                type: 'POST',
+                dataType: 'json',
+                success: function (result) {
+                    if (result.IsOk == 1) {
+                        $("#datepickerStart").val(result.DateStart);
+                        $("#datepickerEnd").val(result.DateEnd);
+                    }
+                },
+                error: function (error) {
+
+                }
+            });
+        }
+    });
+</script>

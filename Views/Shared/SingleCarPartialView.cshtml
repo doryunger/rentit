@@ -1,0 +1,18 @@
+﻿@using CarRent.Entities
+@model Car
+
+<br />
+<br />
+@Html.LabelFor(m => m.Model.ModelName)
+@Html.DisplayFor(m => m.Model.ModelName)
+<br />
+@Html.LabelFor(m => m.KM)
+@Html.DisplayFor(m => m.KM)
+<br />
+@Html.LabelFor(m => m.CarNumber)
+@Html.DisplayFor(m => m.CarNumber)
+<br />
+@Html.LabelFor(m => m.Model.DailyPrice)
+@Html.DisplayFor(m => m.Model.DailyPrice)<span class="glyphicon glyphicon-euro"></span>
+<br />
+<br />

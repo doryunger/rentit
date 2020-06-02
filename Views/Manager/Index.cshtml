@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Manager/ManagersLayout.cshtml";
+}
+@if (TempData["message"] != null)
+{
+
+    if (TempData["message"].ToString() == "Upload Succeded!")
+    {
+
+        <p class="alert alert-success" id="successMessage">@TempData["message"]</p>
+    }
+
+    else
+    {
+        <p class="alert alert-danger">@TempData["message"]</p>
+
+    }
+
+    <br />
+<br />
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                </div>
+            </div>
+            <div class="row row-divided">
+                <div class="col-md-7 column-one">
+
+                </div>
+                <div class="vertical-divider"></div>
+
+
+                <div class="col-md-5 column-two">
+                    <p class="actionSuccses"></p>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <
+
+    </main>
+}

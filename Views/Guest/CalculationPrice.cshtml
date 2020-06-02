@@ -1,0 +1,27 @@
+﻿@using CarRent.Entities
+@using RentIt.Models
+@model PriceCalViewModel
+@if (Model != null)
+{
+    <div class="col-lg-12">
+        <div class="row">
+            <label>Number Car: </label> <span>@Model.NumberCar</span>
+        </div>
+        <div class="row">
+            <label>Availability: </label> @if (Model.Availability) 
+                                          { 
+                                              <span> Availability</span> 
+                                          }
+                                          else
+                                          {
+                                              <span>Not Availability</span>
+                                          }
+        </div>
+        <div class="row">
+            <label>Number Date: </label> <span>@Model.NumberDate</span>
+        </div>
+        <div class="row">
+            <label>Total Price: </label> <span>@Model.Price.ToString("###,###,###.##")</span>
+        </div>
+    </div>
+}

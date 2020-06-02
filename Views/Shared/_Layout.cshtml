@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!----title>@ViewBag.Title - My ASP.NET Application</title-->
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />*@
+    <link href="~/Content/datepicker.css" rel="stylesheet" />
+    <title> Car Rental</title>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="\">Home</a>
+            </div>
+            @if (!string.IsNullOrEmpty(User.Identity.Name))
+            {
+                if (User.IsInRole("manager"))
+                //if (User.Identity.Name=="manager")
+                {
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="@Url.Action("Index","Guest")">Search a Car<span class="sr-only">(current)</span></a></li>
+                            <li><a href="@Url.Action("PreviousReservations", "Customer")">Your History</a></li>
+                            <li><a href="@Url.Action("Index","Employee")">Car return</a></li>
+                            <li><a href="@Url.Action("Index","Manager")">Manager</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#">Hello @User.Identity.Name! </a></li>
+                            <li><a href="@Url.Action("LogOut", "Home")">  Log Out <span class="glyphicon glyphicon-log-out"></span></a></li>
+                            <li><a href="@Url.Action("MyBusket","Customer")">My Busket <i class="fa fa-shopping-basket" aria-hidden="true"> <span class="cart-item-count" id="NumberMyBusket"> 0 </span></i></a></li>
+                        </ul>
+                    </div>
+                }
+                if (User.IsInRole("Employee"))
+                //if (User.Identity.Name == "employee")
+                {
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="@Url.Action("Index","Guest")">Search a Car<span class="sr-only">(current)</span></a></li>
+                            <li><a href="@Url.Action("PreviousReservations", "Customer")">Your History</a></li>
+                            <li><a href="@Url.Action("Index","Employee")">Car return</a></li>
+
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#">Hello @User.Identity.Name! </a></li>
+                            <li><a href="@Url.Action("LogOut", "Home")"> Log Out <span class="glyphicon glyphicon-log-out"></span></a></li>
+                            <li><a href="@Url.Action("MyBusket","Customer")">My Busket <i class="fa fa-shopping-basket" aria-hidden="true"> <span class="cart-item-count" id="NumberMyBusket"> 0 </span></i></a></li>
+                        </ul>
+                    </div>
+                }
+
+                if (User.IsInRole("Customer"))
+                //if (User.Identity.Name == "customer")
+                {
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="@Url.Action("Index","Guest")">Search a Car<span class="sr-only">(current)</span></a></li>
+                            <li><a href="@Url.Action("PreviousReservations", "Customer")">Your History</a></li>
+
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#">Hello @User.Identity.Name! </a></li>
+                            <li><a href="@Url.Action("LogOut", "Home")"> Log Out <span class="glyphicon glyphicon-log-out"></span></a></li>
+                            <li><a href="@Url.Action("MyBusket","Customer")">My Busket <i class="fa fa-shopping-basket" aria-hidden="true"> <span class="cart-item-count" id="NumberMyBusket"> 0 </span></i></a></li>
+                        </ul>
+                    </div>
+                }
+            }
+
+
+
+            else
+            {
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="@Url.Action("Index","Guest")">Search a Car<span class="sr-only">(current)</span></a></li>
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="@Url.Action("Login", "Home")">Please Log In<span class="glyphicon glyphicon-log-in"></span></a></li>
+                        <li><a href="@Url.Action("SignUp", "Home")">Sign Up  <span class="glyphicon glyphicon-pencil"></span></a></li>
+
+                    </ul>
+                </div>
+            }
+
+        </div>
+    </nav>
+    @RenderBody()
+    <br />
+    <footer>
+       <!--div class="container-fluid">
+            <div class="row text-right">
+                <h4>Contact Us</h4>
+                <ul class="list-unstyled">
+                    <li>Jerusalem, Israel</li>
+                    <li>0545745982</li>
+                    <li><a href='mailto:rodion@zodiac.software'></a>rodion@zodiac.software</li>
+                </ul>
+                <p>Rodion Zinovyev &copy;2016.</p>
+            </div>
+        <div/-->
+    </footer>
+</body>
+</html>
+<script>
+    $(function () {
+        $.ajax({
+            url: '@Url.Action("GetNumberMyBusket", "Guest")',
+            type: 'POST',
+            dataType: 'json',
+            success: function (result) {
+                if (result) {
+                    $("#NumberMyBusket").html(result);                   
+                }
+            },
+            error: function (error) {
+
+            }
+        });
+    });    
+</script>

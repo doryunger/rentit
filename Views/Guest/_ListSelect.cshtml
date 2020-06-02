@@ -1,0 +1,17 @@
+﻿@using CarRent.Entities
+@model IEnumerable<Car>
+<ul class="list-inline carlist">
+    @foreach (var car in Model)
+    {
+        int gear = (int)car.Model.gear;
+        <li class="list-group-item model" data-carmodel="@car.Model.ModelID" data-manufacturer="@car.Model.Manufacturer.ToUpper()"
+            data-gear="@gear.ToString()" id="@car.Model.ModelID" data-carid="@car.CarID" data-price="@car.Model.DailyPrice">
+            @Html.Partial("SingleCarPartialView", car)           
+            <img src="@car.UrlImage" width="160" height="100" /> <br />
+            <button class="btn btn-default calculate" onclick="RemovePurchases(@car.CarID)">Remove form select list</button>
+        </li>
+    }
+</ul>
+
+
+

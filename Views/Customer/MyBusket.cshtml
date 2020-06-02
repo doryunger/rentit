@@ -1,0 +1,127 @@
+﻿@model IEnumerable<RentIt.Models.PurchaseView>
+   @{
+    ViewBag.Title = "MyBusket";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+<style type="text/css">
+    .Highlights{
+        background-color:#00ff90;
+    }
+</style>
+<h2>MyBusket</h2>
+@if (TempData["Success"] != null)
+{
+    <p class="alert alert-success" id="successMessage">@TempData["Success"]</p>
+}
+
+<div class="col-lg-12 container-fluid">
+    <div class="row">
+        <div class="col-sm-7">
+            <table class="table table-bordered table-condensed">
+                <tr style="background-color:darkcyan; color:whitesmoke;">
+                    <th width="120px;" style="min-width:100px;">
+                        @Html.DisplayNameFor(model => model.StartDate)
+                    </th>
+                    <th width="100px;" style="min-width:100px;">
+                        @Html.DisplayNameFor(model => model.SupposedReturn)
+                    </th>
+
+                    <th width="100px;" style="min-width:100px;">
+                        @Html.DisplayNameFor(model => model.ClientID)
+                    </th>
+                    <th width="190px;" style="min-width:170px;">
+                        @Html.DisplayNameFor(model => model.CarID)
+                    </th>
+                    <th width="120px;" style="min-width:120px;">
+                        @Html.DisplayNameFor(model => model.Price)
+                    </th>
+                    <th width="220px;" style="min-width:200px;">
+                        @Html.DisplayNameFor(model => model.Availlability)
+                    </th>
+                    <th width="340px;" style="min-width:320px;"></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    var avai = item.Availlability.HasValue ? item.Availlability.Value : false;                    
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SupposedReturn)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClientID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CarID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @if(!avai)                           
+                            {
+                                <span>Car is Purchases</span>
+                            }
+                        </td>
+                        <td style="min-width:320px;">
+                            <div class="container-fluid">
+                                @*href="@Url.Action("Confimation", new { dealID = item.ID })"*@
+                                @if (avai)
+                                {<a class="btn btn-success" style="min-width: 70px" onclick="Purchases(@item.ID)">Confirm</a>}
+                                else
+                                {<a class="btn btn-default" disabled="disabled" style="min-width:70px">Confirm</a>}  <a class="btn btn-primary" href="@Url.Action("Index","Guest")">Continue Shopping</a>  <a class="btn btn-danger" href="@Url.Action("RemoveItemFromBusket", new { dealID = item.ID })">Delete</a>
+                            </div>
+                        </td>
+
+                    </tr>
+
+
+                }
+            </table>
+            <a class="btn btn-danger" href="@Url.Action("ClearBusket")">Clear Busket</a>
+        </div>
+    </div>
+    <hr />
+    <div class="row" id="ListPurchased">
+        @Html.Action("ListPurchased","Customer")
+    </div>
+</div>
+
+<script src="~/Scripts/ScriptLibriaries/jquery-3.1.1.min.js"></script>
+<script src="~/Scripts/ViewScripts/MainScript.js"></script>
+
+<script type="text/javascript">
+    function Purchases(purchaseID) {
+        var isConfirm = confirm("You want to rent this car?");
+        if (isConfirm) {
+            var data = { dealID: null };
+
+            data.dealID = purchaseID;
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Confimation", "Customer")',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result.IsOk == 0) {
+                        alert("Please sign in to use this feature");
+                    }
+                    else if (result.IsOk == 1) {
+                        var a = alert("You have successfully rented a car!");                        
+                        window.location.href = result.Url;
+                       
+                    }
+                    else {
+                        alert("Error, Please refresh website!");
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+        }
+    }
+</script>

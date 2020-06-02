@@ -1,0 +1,72 @@
+﻿@using RentIt.Models
+@model LoginUser
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+<h2>Login</h2>
+@if (TempData["Success"] != null)
+{
+    <p class="alert alert-success" id="successMessage">@TempData["Success"]</p>
+}
+
+@using (Html.BeginForm())
+{
+
+    <div class="form-horizontal col-sm-4">
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-6">
+            <input type="submit" value="LogIn" class="btn btn-success" />  <a class="btn btn-danger" href="@Url.Action("Index")">Cancel</a>
+        </div>
+    </div>
+  </div>
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

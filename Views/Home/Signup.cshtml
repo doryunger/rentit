@@ -1,0 +1,76 @@
+﻿
+@model RentIt.Models.UserView
+
+@{
+    ViewBag.Title = "SignUp";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+<h2>SignUp</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal col-sm-4">
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control col-sm-3" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control col-sm-3 " } })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.gender, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+
+                @*Html.EnumDropDownListFor(model => model.gender, "Select Your Gender", new { @class = "form-control" })*@
+                @Html.ValidationMessageFor(model => model.gender, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BirthData, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.EditorFor(model => model.BirthData, new { htmlAttributes = new { @class = "form-control col-sm-3", id = "datepicker10" } })
+                @Html.ValidationMessageFor(model => model.BirthData, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control col-sm-3" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control col-sm-3" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-6">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control col-sm-3" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6">
+                <input type="submit" value="Create" class="btn btn-success" />  <a class="btn btn-danger" href="@Url.Action("Index")">Cancel</a>
+            </div>
+        </div>
+    </div>
+}

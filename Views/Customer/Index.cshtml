@@ -1,0 +1,82 @@
+﻿@using RentIt.Models
+@model PurchaseView
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_layout.cshtml";
+
+    var linktopicture = "/Guest/GetImage/" + @ViewBag._Model.ID.ToString();
+
+
+
+    Model.CarID = ViewBag._car.ID;
+
+    Model.ClientID = ViewBag.userId;
+
+    Model.StartDate = ViewBag.startDate.ToShortDateString();
+
+    Model.SupposedReturn = ViewBag.supposedReturn.ToShortDateString();
+
+}
+<h3>       Your Selection</h3>
+<div class="reservation">
+    <h2>@ViewBag._Model.NameofModel</h2>
+    <br />
+    <br />
+    <img src="@linktopicture" />
+    <br />
+    <br />
+    <p>Price: @ViewBag.price $</p>
+
+    @using (Html.BeginForm("AddtoBusket", "Customer", FormMethod.Post))
+    {
+
+        <br />
+        @Html.LabelFor(d => d.StartDate, "Day of pick up:")
+        @Html.DisplayFor(d => d.StartDate)
+        <br />
+        @Html.LabelFor(d => d.SupposedReturn, "Return Date:")
+        @Html.DisplayFor(d => d.SupposedReturn)
+        <br />
+        @Html.HiddenFor(x => x.CarID);
+        @Html.HiddenFor(x => x.ClientID);
+        @Html.HiddenFor(x => x.StartDate);
+        @Html.HiddenFor(x => x.SupposedReturn);
+        <br />
+        <input type="submit" value="Add to Busket" class="btn btn-success" /> <a class="btn btn-danger" href="@Url.Action("Index", "Guest")">Cancell</a>
+    }
+    <br />
+    <br />
+</div>
+
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<script src="~/Scripts/ScriptLibriaries/jquery-3.1.1.min.js"></script>
+<script src="~/Scripts/ScriptLibriaries/jquery-ui-1.12.1.min.js"></script>
+<script src="~/Scripts/ScriptLibriaries/bootstrap.min.js"></script>
+<script src="~/Scripts/ScriptLibriaries/moment.min.js"> </script>
+<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/ViewScripts/MainScript.js"></script>

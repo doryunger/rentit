@@ -1,0 +1,74 @@
+﻿@model RentIt.Models.CarView
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Add New Car</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ModelID, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-8">
+                @Html.EditorFor(model => model.ModelID, new { htmlAttributes = new { @class = "Model form-control" } })
+                @Html.ValidationMessageFor(model => model.ModelID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SnifID, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-8">
+                @Html.EditorFor(model => model.SnifID, new { htmlAttributes = new { @class = "Branch form-control" } })
+                @Html.ValidationMessageFor(model => model.SnifID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-8">
+                @Html.EditorFor(model => model.CarNumber, new { htmlAttributes = new { @class = "CarNumber form-control" } })
+                @Html.ValidationMessageFor(model => model.CarNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.KM, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-8">
+                @Html.EditorFor(model => model.KM, new { htmlAttributes = new { @class = "Mileage form-control" } })
+                @Html.ValidationMessageFor(model => model.KM, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarAvilablity, htmlAttributes: new { @class = "control-label col-sm-2 col-sm-offset-2" })
+            <div class="col-sm-8">
+                <div class="checkbox-inline">
+                    @Html.EditorFor(model => model.CarAvilablity, new { htmlAttributes = new { @class = "properState form-control" } })
+                    @Html.ValidationMessageFor(model => model.CarAvilablity, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-5">
+                <input type="button" value="Create" class="btn btn-primary" id="submitNewCar" />  <input type="button" value="Cancel" class="btn btn-danger cancel" />
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+<script src="~/Scripts/ScriptLibriaries/jquery.validate.min.js"></script>
+<script src="~/Scripts/ScriptLibriaries/jquery.validate.unobtrusive.min.js"></script>
